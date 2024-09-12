@@ -5,15 +5,33 @@
 	<title></title>
 	<link rel="manifest" href="./manifest.json">
 	<link rel="stylesheet" href="./main.css">
+	<script src="./js/question.js"></script>
 	<script src="./js/init.js"></script>
 </head>
 <body>
+	<!--
+		+----------------------------------------+
+		|         |  #header          |          |
+		|         |                   |          |
+		|         |                   |          |
+		+---------+-------------------+----------+
+		| #pre-c  |  #centre          | #post-c  |
+		|         |                   |          |
+		|         |                   |          |
+		+---------+-------------------+----------+
+		|         |  #footer          |          |
+		|         |   > button#next   |          |
+		|         |                   |          |
+		+---------+-------------------+----------+
+	-->
 	<div class="container largetext">
-		<div class="header"></div>
-		<div class="pre-content descr"></div>
-		<div class="centre"></div>
-		<div class="post-content descr"></div>
-		<div class="footer"></div>
+		<div id="header" class="header"></div>
+		<div id="pre-c" class="pre-content descr"></div>
+		<div id="centre" class="centre"></div>
+		<div id="post-c" class="post-content descr"></div>
+		<div id="footer" class="footer">
+			<button id='next' class="button"></button>
+		</div>
 	</div>
 </body>
 </html>
