@@ -25,7 +25,7 @@ function run(q: Questionnaire) {
 	}
 }
 
-function gatherResponse(i: number, savedName: string) {
+function gatherResponse(i: number, savedName: string): string {
 	const res = (document.getElementById('response') as HTMLInputElement).value;
 	const storedRes = STORAGE.getItem(savedName);
 	if (storedRes == null) {

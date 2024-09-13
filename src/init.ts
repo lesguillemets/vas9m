@@ -24,7 +24,7 @@ function switchGridToQuestions() {
 	cell.appendChild(rangeInput);
 }
 
-function initStorage(rop:RunOption) {
+function initStorage(rop:RunOption): boolean {
 	// start receiving question
 	const partID = (document.getElementById('participantID') as HTMLInputElement).value;
 	if (partID === '') {
