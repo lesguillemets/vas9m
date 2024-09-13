@@ -4,7 +4,7 @@ interface RenderOption {
 	isLastQ: boolean;
 }
 
-class Question{
+class Flip{
 	header: CellContent;
 	pre: CellContent;
 	post: CellContent;
@@ -20,19 +20,27 @@ class Question{
 		this.post = post;
 		// this.nextMsg = nextMsg;
 	}
-
-	render(op: RenderOption) {
-		clearQuestionPage();
+	basicRender(nextMsg:CellContent) {
+		// clears the page and renders header, pre, post.
+		// nextMsg is, currently, assumed to be context-dependent,
+		// so it is something this function explicitly receives
+		clearPage();
 		clevAppend(document.getElementById('header'), this.header);
 		clevAppend(document.getElementById('pre-c'), this.pre);
 		clevAppend(document.getElementById('post-c'), this.post);
+		clevAppend(document.getElementById('next'), nextMsg);
+	}
+}
+
+class Question extends Flip {
+	render(op: RenderOption) {
 		let nextMsg;
 		if (op.isLastQ) {
 			nextMsg = "回答を終える";
 		} else {
 			nextMsg = "次へ";
 		}
-		clevAppend(document.getElementById('next'), nextMsg);
+		this.basicRender(nextMsg);
 	}
 }
 
@@ -46,8 +54,8 @@ function clevAppend(node: HTMLElement, child: CellContent) {
 	}
 }
 
-function clearQuestionPage() {
-	const  gridsToBeCleard: string[] = ["header", "pre-bar","post-bar", "next"];
+function clearPage() {
+	const  gridsToBeCleard: string[] = ["header", "pre-c","post-c", "next"];
 	for (const id of gridsToBeCleard) {
 		document.getElementById(id).textContent = "";
 	}
