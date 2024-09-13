@@ -1,9 +1,11 @@
 
-function run(questions: Question[], rop: RunOption, n: number, seq:number) {
-	// runs n-th question, in the seq-th sequence.
-	if (n >= questions.length) {
+function run(q: Questionnaire) {
+	// runs q.n-th question, in the q.seq-th sequence.
+	if (q.n >= q.nQuestions) {
 		// end of the sequence.
-		if (seq+1 >= rop.maxSequence) {
+		console.log(q);
+		console.log(STORAGE);
+		if (q.seq+1 >= q.runOption.maxSequence) {
 			// e.g. 0+1 >= 1 : end of the entire experiment
 			alert("end; download;");
 		} else {
@@ -12,10 +14,12 @@ function run(questions: Question[], rop: RunOption, n: number, seq:number) {
 		}
 	} else {
 		// let's ask the n-th question!
-		questions[n].render({'isLastQ': false});
+		const isLastQ: boolean = (q.n+1 === q.nQuestions);
+		q.qs[q.n].render({'isLastQ': isLastQ});
 		document.getElementById('next').onclick = () => {
-			gatherResponse(n, rop.dataStorageName);
-			run(questions, rop, n+1, seq);
+			gatherResponse(q.n, q.runOption.dataStorageName);
+			q.n += 1;
+			run(q);
 		}
 	}
 }

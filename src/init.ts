@@ -1,10 +1,11 @@
 function init(rop : RunOption){
 	prepareStartPage();
+	let questionnaire = new Questionnaire(theQuestions, rop);
 	document.getElementById('next').onclick = () => {
 		const initSuccess = initStorage(rop);
 		if (initSuccess) {
 			switchGridToQuestions();
-			run(theQuestions, rop, 0, 0)
+			run(questionnaire);
 		}
 	}
 }
