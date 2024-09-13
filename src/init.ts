@@ -32,10 +32,10 @@ function initStorage(rop:RunOption) {
 		return false;
 	}
 	const responses = [];
-	STORAGE.setItem("partID", partID);
+	let dat = { 'partID' : partID, 'responses': responses };
 	// For plain objects and arrays, you can use JSON.stringify().
 	// https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
-	STORAGE.setItem(rop.dataStorageName, JSON.stringify(responses));
+	STORAGE.setItem(rop.dataStorageName, JSON.stringify(dat));
 	return true;
 }
 
