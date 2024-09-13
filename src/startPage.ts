@@ -12,3 +12,4 @@ function prepareStartPage() {
 		<input type="text" size="7" placeholder="IDを入力" spellcheck="false" autocorrect="off" id="participantID">
 	`;
 }
+
