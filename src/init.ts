@@ -39,4 +39,4 @@ function initStorage(rop:RunOption): boolean {
 	return true;
 }
 
-window.addEventListener('load', () => init({maxSequence:1, dataStorageName: "VACResult"}));
+window.addEventListener('load', () => init({maxSequence:1, dataStorageName: "VASResult"}));
