@@ -51,7 +51,9 @@ function prepareFinishPage(q: Questionnaire) {
 	`;
 	document.getElementById('next').onclick =  () => {
 		downloadResult(q);
-		setRestart(q);
+		if (document.getElementById('restart') === null) {
+			setRestart(q);
+		}
 	}
 }
 
