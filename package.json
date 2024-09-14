@@ -1,0 +1,26 @@
+{
+  "name": "vas9m",
+  "version": "1.0.0",
+  "description": "- https://lesguillemets.github.io/vas9m",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lesguillemets/vas9m.git"
+  },
+  "keywords": [
+    "lesguillemets"
+  ],
+  "author": "lesguillemets",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/lesguillemets/vas9m/issues"
+  },
+  "homepage": "https://github.com/lesguillemets/vas9m#readme",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.0",
+    "typescript": "^5.6.2"
+  }
+}
