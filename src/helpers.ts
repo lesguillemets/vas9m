@@ -1,9 +1,3 @@
-const STORAGE = sessionStorage;
-
-interface RunOption {
-	maxSequence: number;
-	dataStorageName: string;
-}
 
 function toTwoDigits(n:number): string {
 	// n : integer, returnd 01..99
@@ -26,4 +20,14 @@ function datetime_format(d: Date): string{
 		timestr
 	].join('-');
 	return formatted;
+}
+
+function clevAppend(node: HTMLElement, child: CellContent) {
+	if (typeof child === "object" && child.nodeType === 1) {
+		// assume child is a node
+		return(node.appendChild(child));
+	} else if (typeof child === 'string') {
+		node.innerHTML = child;
+		return node;
+	}
 }
