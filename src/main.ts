@@ -64,7 +64,7 @@ function setRestart(q:Questionnaire) {
 		// Finished everything!
 		restartButton.innerText = "結果のファイルは保存したので，回答をクリアして初期画面に戻る";
 		restartButton.onclick = () => {
-			const conf = confirm("tsv ファイルを保存しましたね？\n その他の場所からはデータが失われます");
+			const conf = confirm("この参加者の回答はこれで終わりです．\ntsv ファイルを保存しましたね？\n その他の場所からはデータが失われます");
 			if (conf) {
 				restartAll(q);
 			}
