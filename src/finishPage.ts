@@ -4,17 +4,6 @@ const finishPage: Flip = new Flip(
 	""
 );
 
-function prepareFinishPage(q: Questionnaire) {
-	finishPage.basicRender("担当者はここからダウンロード");
-	document.getElementById('centre').innerHTML = `
-			<div class="center-image">
-				<img src="https://live.staticflickr.com/778/20640894926_cdd2ccc266_n.jpg" alt="">
-			</div>
-	`;
-	document.getElementById('next').onclick =  () => downloadResult(q);
-}
-
-
 function downloadResult(q: Questionnaire) {
 	const datStr = STORAGE.getItem(q.runOption.dataStorageName);
 	if (datStr == null) {
@@ -36,3 +25,4 @@ function downloadResult(q: Questionnaire) {
 	anch.click();
 	document.body.removeChild(anch);
 }
+

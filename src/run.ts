@@ -5,8 +5,7 @@ function run(q: Questionnaire) {
 		// end of the sequence.
 		console.log(q);
 		console.log(STORAGE);
-		if (q.seq+1 >= q.runOption.maxSequence) {
-			// e.g. 0+1 >= 1 : end of the entire experiment
+		if (q.isLastSeq()) {
 			console.log("end; download;");
 			prepareFinishPage(q);
 		} else {
