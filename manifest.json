@@ -2,6 +2,6 @@
   "name": "VASアンケートシステム",
   "short_name": "VAS",
   "start_url": "./",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "#fff",
 }
