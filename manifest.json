@@ -3,5 +3,5 @@
   "short_name": "VAS",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#fff",
+  "background_color": "#fff"
 }
