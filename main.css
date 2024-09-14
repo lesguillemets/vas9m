@@ -50,6 +50,8 @@ body, html {
 	/* justify-self:center; */
 	justify-self:stretch;
 	/* background-color:pink; */
+	text-align:center;
+	align:center;
 }
 
 .descr {
