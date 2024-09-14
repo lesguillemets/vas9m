@@ -34,7 +34,7 @@ class Flip{
 
 class Question extends Flip {
 	render(op: RenderOption) {
-		let nextMsg;
+		let nextMsg: string;
 		if (op.isLastQ) {
 			nextMsg = "回答を終える";
 		} else {
@@ -63,7 +63,7 @@ function clearPage() {
 }
 
 function resetBar() {
-	let bar = document.getElementById('response');
+	const bar = document.getElementById('response');
 	if (bar !== null) {
 		(bar as HTMLInputElement).value = '0.5';
 	}

@@ -3,7 +3,7 @@
 
 function genQuestions(){
 	const head: string = "当てはまるところを選んでください";
-	let qs: Question[] = [];
+	const qs: Question[] = [];
 	qs.push(new Question(head, "リラックスしている", "緊張している"));
 	// too many makes it harder to check
 	// qs.push(new Question(head, "安心している", "不安感がある"));
@@ -17,13 +17,13 @@ function genQuestions(){
 function tryImageQuestion(): Question {
 	const imageCont: HTMLElement = document.createElement('div');
 	imageCont.classList.add("center-image");
-	let preImg = document.createElement('img');
+	const preImg = document.createElement('img');
 	preImg.src = "https://live.staticflickr.com/3852/14566879637_13d5d2a0b1_n.jpg";
-	let pre: HTMLElement = imageCont.cloneNode() as HTMLElement;
+	const pre: HTMLElement = imageCont.cloneNode() as HTMLElement;
 	pre.appendChild(preImg);
-	let postImg = document.createElement('img');
+	const postImg = document.createElement('img');
 	postImg.src = "https://live.staticflickr.com/3835/14752671885_b9f0b22a82_n.jpg";
-	let post: HTMLElement = imageCont.cloneNode() as HTMLElement;
+	const post: HTMLElement = imageCont.cloneNode() as HTMLElement;
 	post.appendChild(postImg);
 	const q = new Question (
 		"どちらかというと",

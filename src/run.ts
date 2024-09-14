@@ -31,7 +31,7 @@ function gatherResponse(i: number, savedName: string): string {
 		alert("多分質問を始めるページを経由してない : STORAGE の初期化が未");
 		return "";
 	}
-	let dat = JSON.parse(storedRes);
+	const dat = JSON.parse(storedRes);
 	if (dat.responses.length !== i) { console.log("ERROR? maybe wrong number of responses "+ dat.responses);}
 	dat.responses.push(res);
 	STORAGE.setItem(savedName, JSON.stringify(dat));

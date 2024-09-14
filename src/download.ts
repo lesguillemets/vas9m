@@ -17,7 +17,7 @@ function downloadResult(q: Questionnaire) {
 	console.log(tsvLine);
 	const blob = new Blob([tsvLine], {type: "text/tab-separated-values;charset=utf-8"})
 	const url = URL.createObjectURL(blob);
-	let anch = document.createElement('a');
+	const anch = document.createElement('a');
 	anch.setAttribute('href', url);
 	anch.setAttribute('download', [timeStamp, '-', dat.partID, '.tsv'].join(''));
 	anch.style.display = 'none';

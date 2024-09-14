@@ -1,6 +1,6 @@
 function init(rop : RunOption){
 	prepareStartPage();
-	let questionnaire = new Questionnaire(theQuestions, rop);
+	const questionnaire = new Questionnaire(theQuestions, rop);
 	document.getElementById('next').onclick = () => {
 		const initSuccess = initStorage(rop);
 		if (initSuccess) {
@@ -12,14 +12,14 @@ function init(rop : RunOption){
 
 function switchGridToQuestions() {
 	// parepare input[type=range] into #centre
-	let rangeInput = document.createElement('input');
+	const rangeInput = document.createElement('input');
 	rangeInput.type = "range";
 	rangeInput.id = 'response';
 	rangeInput.classList.add('range-bar');
 	rangeInput.min = "0";
 	rangeInput.max = "1";
 	rangeInput.step = "any";
-	let cell = document.getElementById('centre');
+	const cell = document.getElementById('centre');
 	cell.innerText = "";
 	cell.appendChild(rangeInput);
 }
@@ -32,7 +32,7 @@ function initStorage(rop:RunOption): boolean {
 		return false;
 	}
 	const responses = [];
-	let dat = { 'partID' : partID, 'responses': responses };
+	const dat = { 'partID' : partID, 'responses': responses };
 	// For plain objects and arrays, you can use JSON.stringify().
 	// https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 	STORAGE.setItem(rop.dataStorageName, JSON.stringify(dat));
@@ -58,8 +58,8 @@ function prepareFinishPage(q: Questionnaire) {
 }
 
 function setRestart(q:Questionnaire) {
-	let cell = document.getElementById('centre');
-	let restartButton: HTMLButtonElement = document.createElement('button');
+	const cell = document.getElementById('centre');
+	const restartButton: HTMLButtonElement = document.createElement('button');
 	restartButton.id = 'restart';
 	restartButton.classList.add('button');
 	if (q.isLastSeq()) {
