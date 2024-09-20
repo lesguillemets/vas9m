@@ -4,16 +4,17 @@
 function genQuestions(){
 	const head: string = "当てはまるところを選んでください";
 	const qs: Question[] = [];
-	qs.push(new Question(head, "リラックスしている", "緊張している"));
-	// too many makes it harder to check
-	// qs.push(new Question(head, "安心している", "不安感がある"));
-	// qs.push(new Question(head, "眠気がある", "目が覚めている"));
-	qs.push(tryImageQuestion());
+	qs.push(new Question(head, "目が覚めている", "眠気がある"));
+	qs.push(new Question(head, "安心している", "不安感がある"));
 	qs.push(new Question(head, "元気", "疲れている"));
-	// qs.push(new Question(head, "心地よい気分", "不快な気分"));
+	qs.push(new Question(head, "リラックスしている", "緊張している"));
+	qs.push(new Question(head, "楽しい", "楽しくない"));
+	qs.push(new Question(head, "心地よい", "不快"));
+	// qs.push(tryImageQuestion());
 	return qs;
 }
 
+// demo for including pictures
 function tryImageQuestion(): Question {
 	const imageCont: HTMLElement = document.createElement('div');
 	imageCont.classList.add("center-image");
