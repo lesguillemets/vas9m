@@ -1,4 +1,3 @@
-const STORAGE = sessionStorage;
 function toTwoDigits(n) {
     // n : integer, returnd 01..99
     const s = String(n).padStart(2, '0');
@@ -19,4 +18,14 @@ function datetime_format(d) {
         timestr
     ].join('-');
     return formatted;
+}
+function clevAppend(node, child) {
+    if (typeof child === "object" && child.nodeType === 1) {
+        // assume child is a node
+        return (node.appendChild(child));
+    }
+    else if (typeof child === 'string') {
+        node.innerHTML = child;
+        return node;
+    }
 }
