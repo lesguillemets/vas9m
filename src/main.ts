@@ -1,5 +1,5 @@
 function init(maxRepeat: number){
-	prepareStartPage();
+	prepareRegisterPage();
 	const questionnaire = new Questionnaire(theQuestions, maxRepeat);
 	document.getElementById('next').onclick = () => {
 		const partId = (document.getElementById('participantID') as HTMLInputElement).value;
@@ -10,8 +10,7 @@ function init(maxRepeat: number){
 		let runner = new Runner(questionnaire, partId);
 		const initSuccess = runner.initStorage();
 		if (initSuccess) {
-			switchGridToQuestions();
-			// run(questionnaire);
+			runner.startRepeat();
 		}
 	}
 }

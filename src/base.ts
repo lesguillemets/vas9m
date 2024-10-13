@@ -91,6 +91,61 @@ class Runner {
 		return (this.currentRepeat === this.qn.maxRepeat-1)
 	}
 
+	startRepeat(): void{
+		if (this.currentQ !== 0) {
+			alert("startRepeat is called but currentQ is not Zero\n This is unexpected");
+		}
+		switchGridToNone();
+		this.appendHeader("指示されたタイミングで回答を開始してください(" + (this.currentRepeat+1) + "/" + this.qn.maxRepeat + ")");
+		this.setButtonTitle("クリックして回答を開始する")
+		document.getElementById('next').onclick = () => {
+			switchGridToQuestions();
+			this.saveStatus();
+			this.runStep();
+		}
+	}
+	runStep(): void {
+		this.clearPage();
+		this.renderCurrentQ();
+		if (! (this.isLastQ())) {
+			// there is still next question available
+			document.getElementById('next').onclick = () => {
+				console.log(this.acceptRes());
+				this.saveStatus();
+				this.currentQ += 1;
+				this.runStep();
+			};
+		} else {
+			// last question on sequence has been answered
+			console.log(this.acceptRes());
+			this.saveStatus();
+			this.currentQ = 0;
+			this.endRepeat();
+		}
+	}
+
+	endRepeat(): void {
+		if (!(this.isLastRepeat())) {
+			// there is another round you'll be answering
+			this.currentRepeat += 1;
+			this.clearPage();
+			switchGridToNone();
+			this.appendHeader("回答はおしまいです");
+			this.setButtonTitle("クリックして回答を終了");
+			document.getElementById('next').onclick = () => {
+				alert("入力お疲れ様でした．\n OK を押した後，タブレットを置いて実験に戻ってください．")
+				this.startRepeat();
+			}
+		} else {
+			// end of last repeat
+			this.prepareDownload();
+		}
+	}
+
+	prepareDownload():void {
+		alert("検査者に端末を渡してください");
+	}
+
 	renderCurrentQ(): void {
 		this.clearPage();
 		const q : VasQuestion = this.qn.qs[this.currentQ];
@@ -105,7 +160,6 @@ class Runner {
 		clevAppend(document.getElementById('post-c'), q.post);
 		clevAppend(document.getElementById('next'), nextMsg);
 	}
-
 	acceptRes(): number {
 		// accept currently selected answer and save to this.rs
 		const r = this.getRes();
@@ -139,48 +193,19 @@ class Runner {
 			}),
 		);
 	}
-}
 
-
-class Flip{
-	header: CellContent;
-	pre: CellContent;
-	post: CellContent;
-	// Design decision: questions themselves have no influence over the
-	// innerText for the bottom button. For example it will simply be
-	// 'next' every time.
-	// nextMsg: CellContent;
-
-	constructor(header: CellContent, pre: CellContent, post: CellContent){
-		// each of them is either string or a node/element
-		this.header = header;
-		this.pre = pre;
-		this.post = post;
-		// this.nextMsg = nextMsg;
+	appendHeader(msg: CellContent): void {
+		clevAppend(document.getElementById('header'), msg);
 	}
-	basicRender(nextMsg:CellContent) {
-		// clears the page and renders header, pre, post.
-		// nextMsg is, currently, assumed to be context-dependent,
-		// so it is something this function explicitly receives
-		// FIXME clearPage();
-		clevAppend(document.getElementById('header'), this.header);
-		clevAppend(document.getElementById('pre-c'), this.pre);
-		clevAppend(document.getElementById('post-c'), this.post);
-		clevAppend(document.getElementById('next'), nextMsg);
+	setButtonTitle(msg: string): void{
+		document.getElementById('next').innerHTML = msg;
 	}
 }
 
 
-/// preparing start page
-//
-const startPage: Flip = new Flip(
-	"よろしくおねがいします",
-	"",
-	""
-);
-
-function prepareStartPage() {
-	startPage.basicRender("回答を始める");
+function prepareRegisterPage() {
+	clevAppend(document.getElementById('header'), "参加者IDの設定");
+	clevAppend(document.getElementById('next'), "回答画面へ");
 	// FIXME I know, I don't want it
 	document.getElementById('centre').innerHTML = `
 	<label class="weaktext" for="participantID">参加者ID</label>
@@ -189,7 +214,7 @@ function prepareStartPage() {
 }
 
 /// preparing question pages
-function switchGridToQuestions() {
+function switchGridToQuestions(): void {
 	// parepare input[type=range] into #centre
 	const rangeInput = document.createElement('input');
 	rangeInput.type = "range";
@@ -202,6 +227,13 @@ function switchGridToQuestions() {
 	cell.innerText = "";
 	cell.appendChild(rangeInput);
 }
+
+function switchGridToNone(): void {
+	const cell = document.getElementById('centre');
+	cell.innerText = "";
+}
+
+
 function initStorage(): boolean {
 	// start receiving question
 	const partID = (document.getElementById('participantID') as HTMLInputElement).value;
@@ -219,11 +251,11 @@ function initStorage(): boolean {
 
 /// preparing finish page
 
-const finishPage: Flip = new Flip(
-	"Thank You! タブレットを担当者に渡してください．",
-	"",
-	""
-);
+// const finishPage: Flip = new Flip(
+// 	"Thank You! タブレットを担当者に渡してください．",
+// 	"",
+// 	""
+// );
 // 
 // function downloadResult(q: Questionnaire) {
 // 	const datStr = STORAGE.getItem(q.runOption.dataStorageName);
