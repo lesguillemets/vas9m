@@ -7,7 +7,7 @@ function init(maxRepeat: number){
 			alert("IDを指定してください");
 			return false;
 		}
-		let runner = new Runner(questionnaire, partId);
+		const runner = new Runner(questionnaire, partId);
 		const initSuccess = runner.initStorage();
 		if (initSuccess) {
 			runner.startRepeat();

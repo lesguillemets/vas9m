@@ -96,7 +96,7 @@ class Runner {
 			alert("startRepeat is called but currentQ is not Zero\n This is unexpected");
 		}
 		switchGridToNone();
-		this.appendHeader("指示されたタイミングで回答を開始してください(" + (this.currentRepeat+1) + "/" + this.qn.maxRepeat + ")");
+		this.appendHeader(`指示されたタイミングで回答を開始してください(${this.currentRepeat+1}/${this.qn.maxRepeat})`);
 		this.setButtonTitle("クリックして回答を開始する")
 		document.getElementById('next').onclick = () => {
 			switchGridToQuestions();
