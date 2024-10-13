@@ -16,4 +16,4 @@ function init(maxRepeat: number){
 }
 
 
-window.addEventListener('load', () => init(3));
+window.addEventListener('load', () => init(2));
