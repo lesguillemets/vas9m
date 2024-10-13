@@ -117,16 +117,21 @@ class Runner {
 			};
 		} else {
 			// last question on sequence has been answered
-			console.log(this.acceptRes());
-			this.saveStatus();
-			this.currentQ = 0;
-			this.endRepeat();
+			document.getElementById('next').onclick = () => {
+				console.log(this.acceptRes());
+				this.saveStatus();
+				this.endRepeat();
+			}
 		}
 	}
 
 	endRepeat(): void {
+		// called when the next button on the last question on sequence
+		// is clicked.
+		this.saveStatus();
 		if (!(this.isLastRepeat())) {
 			// there is another round you'll be answering
+			this.currentQ = 0;
 			this.currentRepeat += 1;
 			this.clearPage();
 			switchGridToNone();
@@ -143,7 +148,19 @@ class Runner {
 	}
 
 	prepareDownload():void {
-		alert("検査者に端末を渡してください");
+		alert("お疲れ様でした\nこれで回答は終わりです．タブレットはそのままにしてください．");
+		switchGridToNone();
+		this.clearPage();
+		this.appendHeader("結果のダウンロード");
+		this.setButtonTitle('担当者はここからダウンロード');
+		document.getElementById('centre').innerHTML = `
+		<div class="center-image">
+		<img src="https://live.staticflickr.com/778/20640894926_cdd2ccc266_n.jpg" alt="">
+			</div>
+		`;
+		document.getElementById('next').onclick =  () => {
+			downloadResult(this);
+		}
 	}
 
 	renderCurrentQ(): void {
@@ -189,7 +206,7 @@ class Runner {
 				partId: this.partId,
 				currentQ: this.currentQ,
 				currentRepeat: this.currentRepeat,
-				rs: this.rs,
+				rs: this.rs.rs,
 			}),
 		);
 	}
@@ -202,6 +219,28 @@ class Runner {
 	}
 }
 
+function downloadResult(r: Runner) {
+	// FIXME name
+	const datStr = STORAGE.getItem("VAS9M_SAVE");
+	if (datStr == null) {
+		alert("多分質問を始めるページを経由してない: Storage 初期化未");
+		return 0;
+	}
+	const dat = JSON.parse(datStr);
+	const cur = new Date(); // current time
+	const timeStamp = datetime_format(cur);
+	const tsvLine = [timeStamp, dat.partID, ...dat.rs].join('\t');
+	console.log(tsvLine);
+	const blob = new Blob([tsvLine], {type: "text/tab-separated-values;charset=utf-8"})
+	const url = URL.createObjectURL(blob);
+	const anch = document.createElement('a');
+	anch.setAttribute('href', url);
+	anch.setAttribute('download', [timeStamp, '-', dat.partID, '.tsv'].join(''));
+	anch.style.display = 'none';
+	document.body.appendChild(anch);
+	anch.click();
+	document.body.removeChild(anch);
+}
 
 function prepareRegisterPage() {
 	clevAppend(document.getElementById('header'), "参加者IDの設定");
@@ -234,21 +273,6 @@ function switchGridToNone(): void {
 }
 
 
-function initStorage(): boolean {
-	// start receiving question
-	const partID = (document.getElementById('participantID') as HTMLInputElement).value;
-	if (partID === '') {
-		alert("no id specified: try again");
-		return false;
-	}
-	const responses = [];
-	const dat = { 'partID' : partID, 'responses': responses };
-	// For plain objects and arrays, you can use JSON.stringify().
-	// https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
-	// STORAGE.setItem(rop.dataStorageName, JSON.stringify(dat));
-	return true;
-}
-
 /// preparing finish page
 
 // const finishPage: Flip = new Flip(
@@ -278,22 +302,7 @@ function initStorage(): boolean {
 // 	anch.click();
 // 	document.body.removeChild(anch);
 // }
-// 
-// function prepareFinishPage(q: Questionnaire) {
-// 	finishPage.basicRender("担当者はここからダウンロード");
-// 	document.getElementById('centre').innerHTML = `
-// 			<div class="center-image">
-// 				<img src="https://live.staticflickr.com/778/20640894926_cdd2ccc266_n.jpg" alt="">
-// 			</div>
-// 	`;
-// 	document.getElementById('next').onclick =  () => {
-// 		downloadResult(q);
-// 		if (document.getElementById('restart') === null) {
-// 			setRestart(q);
-// 		}
-// 	}
-// }
-// 
+
 // function setRestart(q:Questionnaire) {
 // 	const cell = document.getElementById('centre');
 // 	const restartButton: HTMLButtonElement = document.createElement('button');
