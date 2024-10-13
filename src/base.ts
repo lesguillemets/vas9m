@@ -229,13 +229,13 @@ function downloadResult(r: Runner) {
 	const dat = JSON.parse(datStr);
 	const cur = new Date(); // current time
 	const timeStamp = datetime_format(cur);
-	const tsvLine = [timeStamp, dat.partID, ...dat.rs].join('\t');
+	const tsvLine = [timeStamp, dat.partId, ...dat.rs.flat()].join('\t');
 	console.log(tsvLine);
 	const blob = new Blob([tsvLine], {type: "text/tab-separated-values;charset=utf-8"})
 	const url = URL.createObjectURL(blob);
 	const anch = document.createElement('a');
 	anch.setAttribute('href', url);
-	anch.setAttribute('download', [timeStamp, '-', dat.partID, '.tsv'].join(''));
+	anch.setAttribute('download', [timeStamp, '-', dat.partId, '.tsv'].join(''));
 	anch.style.display = 'none';
 	document.body.appendChild(anch);
 	anch.click();
