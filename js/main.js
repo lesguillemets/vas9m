@@ -1,12 +1,17 @@
-function init(rop) {
-    prepareStartPage();
-    const questionnaire = new Questionnaire(theQuestions, rop);
+function init(maxRepeat) {
+    prepareRegisterPage();
+    const questionnaire = new Questionnaire(theQuestions, maxRepeat);
     document.getElementById('next').onclick = () => {
-        const initSuccess = initStorage(rop);
+        const partId = document.getElementById('participantID').value;
+        if (partId === '') {
+            alert("IDを指定してください");
+            return false;
+        }
+        let runner = new Runner(questionnaire, partId);
+        const initSuccess = runner.initStorage();
         if (initSuccess) {
-            switchGridToQuestions();
-            run(questionnaire);
+            runner.startRepeat();
         }
     };
 }
-window.addEventListener('load', () => init({ maxSequence: 1, dataStorageName: "VASResult" }));
+window.addEventListener('load', () => init(2));

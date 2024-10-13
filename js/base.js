@@ -1,111 +1,215 @@
 const STORAGE = sessionStorage;
-function clearPage() {
-    const gridsToBeCleard = ["header", "pre-c", "post-c", "next"];
-    for (const id of gridsToBeCleard) {
-        document.getElementById(id).textContent = "";
-    }
-    resetBar();
-}
-function resetBar() {
-    const bar = document.getElementById('response');
-    if (bar !== null) {
-        bar.value = '0.5';
-    }
-}
-class Flip {
-    // Design decision: questions themselves have no influence over the
-    // innerText for the bottom button. For example it will simply be
-    // 'next' every time.
-    // nextMsg: CellContent;
+class VasQuestion {
     constructor(header, pre, post) {
         // each of them is either string or a node/element
         this.header = header;
         this.pre = pre;
         this.post = post;
-        // this.nextMsg = nextMsg;
-    }
-    basicRender(nextMsg) {
-        // clears the page and renders header, pre, post.
-        // nextMsg is, currently, assumed to be context-dependent,
-        // so it is something this function explicitly receives
-        clearPage();
-        clevAppend(document.getElementById('header'), this.header);
-        clevAppend(document.getElementById('pre-c'), this.pre);
-        clevAppend(document.getElementById('post-c'), this.post);
-        clevAppend(document.getElementById('next'), nextMsg);
     }
 }
-class Question extends Flip {
-    render(op) {
+class Questionnaire {
+    constructor(q, maxRepeat) {
+        this.qs = q;
+        this.maxRepeat = maxRepeat;
+    }
+}
+class Responses {
+    constructor(maxQ, maxRepeat) {
+        this.rs = [];
+        for (let r = 0; r < maxRepeat; r++) {
+            // unanswered answers are stored as null
+            const runAns = Array.from({ length: maxQ }, (v, i) => null);
+            this.rs.push(runAns);
+        }
+    }
+    setRes(repeat, q, res) {
+        if (this.rs[repeat][q] !== null && res === null) {
+            alert("overriding saved answer with null!?");
+        }
+        this.rs[repeat][q] = res;
+    }
+    saveToStorageWithKey(savedName) {
+        STORAGE.setItem(savedName, JSON.stringify(this.rs));
+    }
+}
+class Runner {
+    constructor(qn, partId) {
+        this.textGrids = ["header", "pre-c", "post-c", "next"];
+        this.barId = "response";
+        this.qn = qn;
+        this.partId = partId;
+        const responses = new Responses(qn.qs.length, qn.maxRepeat);
+        this.rs = responses;
+        this.currentQ = 0;
+        this.currentRepeat = 0;
+    }
+    resetBar() {
+        // set bar tip to be in the centre, if the bar exists
+        const bar = document.getElementById(this.barId);
+        if (bar !== null) {
+            bar.value = "0.5";
+        }
+    }
+    clearPage() {
+        for (const id of this.textGrids) {
+            document.getElementById(id).textContent = "";
+        }
+        this.resetBar();
+    }
+    isLastQ() {
+        return (this.currentQ === this.qn.qs.length - 1);
+    }
+    isLastRepeat() {
+        return (this.currentRepeat === this.qn.maxRepeat - 1);
+    }
+    startRepeat() {
+        if (this.currentQ !== 0) {
+            alert("startRepeat is called but currentQ is not Zero\n This is unexpected");
+        }
+        switchGridToNone();
+        this.appendHeader("指示されたタイミングで回答を開始してください(" + (this.currentRepeat + 1) + "/" + this.qn.maxRepeat + ")");
+        this.setButtonTitle("クリックして回答を開始する");
+        document.getElementById('next').onclick = () => {
+            switchGridToQuestions();
+            this.saveStatus();
+            this.runStep();
+        };
+    }
+    runStep() {
+        this.clearPage();
+        this.renderCurrentQ();
+        if (!(this.isLastQ())) {
+            // there is still next question available
+            document.getElementById('next').onclick = () => {
+                console.log(this.acceptRes());
+                this.saveStatus();
+                this.currentQ += 1;
+                this.runStep();
+            };
+        }
+        else {
+            // last question on sequence has been answered
+            document.getElementById('next').onclick = () => {
+                console.log(this.acceptRes());
+                this.saveStatus();
+                this.endRepeat();
+            };
+        }
+    }
+    endRepeat() {
+        // called when the next button on the last question on sequence
+        // is clicked.
+        this.saveStatus();
+        if (!(this.isLastRepeat())) {
+            // there is another round you'll be answering
+            this.currentQ = 0;
+            this.currentRepeat += 1;
+            this.clearPage();
+            switchGridToNone();
+            this.appendHeader("回答はおしまいです");
+            this.setButtonTitle("クリックして回答を終了");
+            document.getElementById('next').onclick = () => {
+                alert("入力お疲れ様でした．\n OK を押した後，タブレットを置いて実験に戻ってください．");
+                this.startRepeat();
+            };
+        }
+        else {
+            // end of last repeat
+            this.prepareDownload();
+        }
+    }
+    prepareDownload() {
+        alert("お疲れ様でした\nこれで回答は終わりです．タブレットはそのままにしてください．");
+        switchGridToNone();
+        this.clearPage();
+        this.appendHeader("結果のダウンロード");
+        this.setButtonTitle('担当者はここからダウンロード');
+        document.getElementById('centre').innerHTML = `
+		<div class="center-image">
+		<img src="https://live.staticflickr.com/778/20640894926_cdd2ccc266_n.jpg" alt="">
+			</div>
+		`;
+        document.getElementById('next').onclick = () => {
+            downloadResult(this);
+        };
+    }
+    renderCurrentQ() {
+        this.clearPage();
+        const q = this.qn.qs[this.currentQ];
         let nextMsg;
-        if (op.isLastQ) {
+        if (this.isLastQ()) {
             nextMsg = "回答を終える";
         }
         else {
             nextMsg = "次へ";
         }
-        this.basicRender(nextMsg);
+        clevAppend(document.getElementById('header'), q.header);
+        clevAppend(document.getElementById('pre-c'), q.pre);
+        clevAppend(document.getElementById('post-c'), q.post);
+        clevAppend(document.getElementById('next'), nextMsg);
     }
-}
-class Questionnaire {
-    constructor(qs, runOption) {
-        this.qs = qs;
-        this.n = 0;
-        this.nQuestions = qs.length;
-        this.seq = 0;
-        this.runOption = runOption;
+    acceptRes() {
+        // accept currently selected answer and save to this.rs
+        const r = this.getRes();
+        this.rs.setRes(this.currentRepeat, this.currentQ, r);
+        return r;
     }
-    isLastSeq() {
-        // e.g. 0+1 >= 1 : end of the entire experiment
-        return (this.seq + 1 === this.runOption.maxSequence);
+    getRes() {
+        // FIXME really do we do this?
+        const res = document.getElementById("response").value;
+        return +res;
     }
-}
-function run(q) {
-    // runs q.n-th question, in the q.seq-th sequence.
-    if (q.n >= q.nQuestions) {
-        // end of the sequence.
-        console.log(q);
-        console.log(STORAGE);
-        if (q.isLastSeq()) {
-            console.log("end; download;");
-            prepareFinishPage(q);
+    initStorage() {
+        if (sessionStorage.getItem("VAS9M_SAVE") !== null) {
+            // sessionStorage contains something!
+            alert("THERE IS STILL A SAVED DATA, WHICH WILL BE LOST!!!");
+            return false;
         }
         else {
-            // continue to next sequence
-            alert("sequence finished; dowload; prepare next");
+            return true;
         }
     }
-    else {
-        // let's ask the n-th question!
-        const isLastQ = (q.n + 1 === q.nQuestions);
-        q.qs[q.n].render({ 'isLastQ': isLastQ });
-        document.getElementById('next').onclick = () => {
-            gatherResponse(q.n, q.runOption.dataStorageName);
-            q.n += 1;
-            run(q);
-        };
+    saveStatus() {
+        // FIXME name
+        STORAGE.setItem("VAS9M_SAVE", JSON.stringify({
+            partId: this.partId,
+            currentQ: this.currentQ,
+            currentRepeat: this.currentRepeat,
+            rs: this.rs.rs,
+        }));
+    }
+    appendHeader(msg) {
+        clevAppend(document.getElementById('header'), msg);
+    }
+    setButtonTitle(msg) {
+        document.getElementById('next').innerHTML = msg;
     }
 }
-function gatherResponse(i, savedName) {
-    const res = document.getElementById('response').value;
-    const storedRes = STORAGE.getItem(savedName);
-    if (storedRes == null) {
-        alert("多分質問を始めるページを経由してない : STORAGE の初期化が未");
-        return "";
+function downloadResult(r) {
+    // FIXME name
+    const datStr = STORAGE.getItem("VAS9M_SAVE");
+    if (datStr == null) {
+        alert("多分質問を始めるページを経由してない: Storage 初期化未");
+        return 0;
     }
-    const dat = JSON.parse(storedRes);
-    if (dat.responses.length !== i) {
-        console.log("ERROR? maybe wrong number of responses " + dat.responses);
-    }
-    dat.responses.push(res);
-    STORAGE.setItem(savedName, JSON.stringify(dat));
-    return res;
+    const dat = JSON.parse(datStr);
+    const cur = new Date(); // current time
+    const timeStamp = datetime_format(cur);
+    const tsvLine = [timeStamp, dat.partId, ...dat.rs.flat()].join('\t');
+    console.log(tsvLine);
+    const blob = new Blob([tsvLine], { type: "text/tab-separated-values;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anch = document.createElement('a');
+    anch.setAttribute('href', url);
+    anch.setAttribute('download', [timeStamp, '-', dat.partId, '.tsv'].join(''));
+    anch.style.display = 'none';
+    document.body.appendChild(anch);
+    anch.click();
+    document.body.removeChild(anch);
 }
-/// preparing start page
-//
-const startPage = new Flip("よろしくおねがいします", "", "");
-function prepareStartPage() {
-    startPage.basicRender("回答を始める");
+function prepareRegisterPage() {
+    clevAppend(document.getElementById('header'), "参加者IDの設定");
+    clevAppend(document.getElementById('next'), "回答画面へ");
     // FIXME I know, I don't want it
     document.getElementById('centre').innerHTML = `
 	<label class="weaktext" for="participantID">参加者ID</label>
@@ -126,83 +230,7 @@ function switchGridToQuestions() {
     cell.innerText = "";
     cell.appendChild(rangeInput);
 }
-function initStorage(rop) {
-    // start receiving question
-    const partID = document.getElementById('participantID').value;
-    if (partID === '') {
-        alert("no id specified: try again");
-        return false;
-    }
-    const responses = [];
-    const dat = { 'partID': partID, 'responses': responses };
-    // For plain objects and arrays, you can use JSON.stringify().
-    // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
-    STORAGE.setItem(rop.dataStorageName, JSON.stringify(dat));
-    return true;
-}
-/// preparing finish page
-const finishPage = new Flip("Thank You! タブレットを担当者に渡してください．", "", "");
-function downloadResult(q) {
-    const datStr = STORAGE.getItem(q.runOption.dataStorageName);
-    if (datStr == null) {
-        alert("多分質問を始めるページを経由してない: Storage 初期化未");
-        return 0;
-    }
-    const dat = JSON.parse(datStr);
-    const cur = new Date(); // current time
-    const timeStamp = datetime_format(cur);
-    const tsvLine = [timeStamp, dat.partID, ...dat.responses].join('\t');
-    console.log(tsvLine);
-    const blob = new Blob([tsvLine], { type: "text/tab-separated-values;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const anch = document.createElement('a');
-    anch.setAttribute('href', url);
-    anch.setAttribute('download', [timeStamp, '-', dat.partID, '.tsv'].join(''));
-    anch.style.display = 'none';
-    document.body.appendChild(anch);
-    anch.click();
-    document.body.removeChild(anch);
-}
-function prepareFinishPage(q) {
-    finishPage.basicRender("担当者はここからダウンロード");
-    document.getElementById('centre').innerHTML = `
-			<div class="center-image">
-				<img src="https://live.staticflickr.com/778/20640894926_cdd2ccc266_n.jpg" alt="">
-			</div>
-	`;
-    document.getElementById('next').onclick = () => {
-        downloadResult(q);
-        if (document.getElementById('restart') === null) {
-            setRestart(q);
-        }
-    };
-}
-function setRestart(q) {
+function switchGridToNone() {
     const cell = document.getElementById('centre');
-    const restartButton = document.createElement('button');
-    restartButton.id = 'restart';
-    restartButton.classList.add('button');
-    if (q.isLastSeq()) {
-        // Finished everything!
-        restartButton.innerText = "結果のファイルは保存したので，回答をクリアして初期画面に戻る";
-        restartButton.onclick = () => {
-            const conf = confirm("この参加者の回答はこれで終わりです．\ntsv ファイルを保存しましたね？\n その他の場所からはデータが失われます");
-            if (conf) {
-                restartAll(q);
-            }
-        };
-    }
-    else {
-        // finished this seq
-        restartButton.innerText = "結果のファイルは保存したので，次の回答を受ける準備をする";
-        restartButton.onclick = () => {
-            alert("not yet implemented!");
-        };
-    }
-    cell.appendChild(restartButton);
-}
-function restartAll(q) {
-    console.log(STORAGE.getItem(q.runOption.dataStorageName));
-    STORAGE.removeItem(q.runOption.dataStorageName);
-    init(q.runOption);
+    cell.innerText = "";
 }
