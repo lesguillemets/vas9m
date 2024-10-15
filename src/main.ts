@@ -1,7 +1,7 @@
 function init(maxRepeat: number){
 	prepareRegisterPage();
 	const questionnaire = new Questionnaire(theQuestions, maxRepeat);
-	document.getElementById('next').onclick = () => {
+	document.getElementById('next')!.onclick = () => {
 		const partId = (document.getElementById('participantID') as HTMLInputElement).value;
 		if (partId === '') {
 			alert("IDを指定してください");

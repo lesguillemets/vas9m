@@ -80,7 +80,7 @@ class Runner {
 	}
 	clearPage(): void {
 		for (const id of this.textGrids) {
-			document.getElementById(id).textContent = "";
+			document.getElementById(id)!.textContent = "";
 		}
 		this.resetBar();
 	}
@@ -98,7 +98,7 @@ class Runner {
 		switchGridToNone();
 		this.appendHeader(`指示されたタイミングで回答を開始してください(${this.currentRepeat+1}/${this.qn.maxRepeat})`);
 		this.setButtonTitle("クリックして回答を開始する")
-		document.getElementById('next').onclick = () => {
+		document.getElementById('next')!.onclick = () => {
 			switchGridToQuestions();
 			this.saveStatus();
 			this.runStep();
@@ -109,7 +109,7 @@ class Runner {
 		this.renderCurrentQ();
 		if (! (this.isLastQ())) {
 			// there is still next question available
-			document.getElementById('next').onclick = () => {
+			document.getElementById('next')!.onclick = () => {
 				console.log(this.acceptRes());
 				this.saveStatus();
 				this.currentQ += 1;
@@ -117,7 +117,7 @@ class Runner {
 			};
 		} else {
 			// last question on sequence has been answered
-			document.getElementById('next').onclick = () => {
+			document.getElementById('next')!.onclick = () => {
 				console.log(this.acceptRes());
 				this.saveStatus();
 				this.endRepeat();
@@ -137,7 +137,7 @@ class Runner {
 			switchGridToNone();
 			this.appendHeader("回答はおしまいです");
 			this.setButtonTitle("クリックして回答を終了");
-			document.getElementById('next').onclick = () => {
+			document.getElementById('next')!.onclick = () => {
 				alert("入力お疲れ様でした．\n OK を押した後，タブレットを置いて実験に戻ってください．")
 				this.startRepeat();
 			}
@@ -153,12 +153,12 @@ class Runner {
 		this.clearPage();
 		this.appendHeader("結果のダウンロード");
 		this.setButtonTitle('担当者はここからダウンロード');
-		document.getElementById('centre').innerHTML = `
+		document.getElementById('centre')!.innerHTML = `
 		<div class="center-image">
 		<img src="https://live.staticflickr.com/778/20640894926_cdd2ccc266_n.jpg" alt="">
 			</div>
 		`;
-		document.getElementById('next').onclick =  () => {
+		document.getElementById('next')!.onclick =  () => {
 			downloadResult(this);
 		}
 	}
@@ -172,10 +172,10 @@ class Runner {
 		} else {
 			nextMsg = "次へ";
 		}
-		clevAppend(document.getElementById('header'), q.header);
-		clevAppend(document.getElementById('pre-c'), q.pre);
-		clevAppend(document.getElementById('post-c'), q.post);
-		clevAppend(document.getElementById('next'), nextMsg);
+		clevAppend(document.getElementById('header')!, q.header);
+		clevAppend(document.getElementById('pre-c')!, q.pre);
+		clevAppend(document.getElementById('post-c')!, q.post);
+		clevAppend(document.getElementById('next')!, nextMsg);
 	}
 	acceptRes(): number {
 		// accept currently selected answer and save to this.rs
@@ -212,10 +212,10 @@ class Runner {
 	}
 
 	appendHeader(msg: CellContent): void {
-		clevAppend(document.getElementById('header'), msg);
+		clevAppend(document.getElementById('header')!, msg);
 	}
 	setButtonTitle(msg: string): void{
-		document.getElementById('next').innerHTML = msg;
+		document.getElementById('next')!.innerHTML = msg;
 	}
 }
 
@@ -243,10 +243,10 @@ function downloadResult(r: Runner) {
 }
 
 function prepareRegisterPage() {
-	clevAppend(document.getElementById('header'), "参加者IDの設定");
-	clevAppend(document.getElementById('next'), "回答画面へ");
+	clevAppend(document.getElementById('header')!, "参加者IDの設定");
+	clevAppend(document.getElementById('next')!, "回答画面へ");
 	// FIXME I know, I don't want it
-	document.getElementById('centre').innerHTML = `
+	document.getElementById('centre')!.innerHTML = `
 	<label class="weaktext" for="participantID">参加者ID</label>
 		<input type="text" size="7" placeholder="IDを入力" spellcheck="false" autocorrect="off" id="participantID">
 	`;
@@ -262,12 +262,12 @@ function switchGridToQuestions(): void {
 	rangeInput.min = "0";
 	rangeInput.max = "1";
 	rangeInput.step = "any";
-	const cell = document.getElementById('centre');
+	const cell = document.getElementById('centre')!;
 	cell.innerText = "";
 	cell.appendChild(rangeInput);
 }
 
 function switchGridToNone(): void {
-	const cell = document.getElementById('centre');
+	const cell = document.getElementById('centre')!;
 	cell.innerText = "";
 }

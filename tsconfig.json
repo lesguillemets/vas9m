@@ -3,6 +3,7 @@
 		"outDir": "./js",
 		"lib": ["dom", "ES2017"],
 		"allowJs": true,
+		"strict": true,
 		"target": "ES2017"
 	},
 	"include": ["./src/**/*"]
