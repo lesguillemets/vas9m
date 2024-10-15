@@ -1,9 +1,9 @@
+import { clevAppend, datetime_format, CellContent } from './helpers.js';
 const STORAGE = sessionStorage;
 
-type CellContent = HTMLElement | string;
 type VasResponse = number | null;
 
-class VasQuestion {
+export class VasQuestion {
 	// single questions
 	header: CellContent;
 	pre: CellContent;
@@ -16,7 +16,7 @@ class VasQuestion {
 	}
 }
 
-class Questionnaire {
+export class Questionnaire {
 	// Think of this class as the paper you hand over to the participant
 	qs: VasQuestion[];
 	maxRepeat: number; // this quetionnaire will run n times
@@ -28,7 +28,7 @@ class Questionnaire {
 
 }
 
-class Responses {
+export class Responses {
 	// Where responses are saved;
 	// for questions that are not yet answered, it will contain null.
 	rs: VasResponse[][];
@@ -54,7 +54,7 @@ class Responses {
 }
 
 
-class Runner {
+export class Runner {
 	readonly textGrids: string[] = ["header", "pre-c", "post-c", "next"];
 	readonly barId: string = "response";
 	partId: string;
@@ -242,7 +242,7 @@ function downloadResult(r: Runner) {
 	document.body.removeChild(anch);
 }
 
-function prepareRegisterPage() {
+export function prepareRegisterPage() {
 	clevAppend(document.getElementById('header')!, "参加者IDの設定");
 	clevAppend(document.getElementById('next')!, "回答画面へ");
 	// FIXME I know, I don't want it

@@ -1,3 +1,5 @@
+import {prepareRegisterPage, Questionnaire, Runner } from './base.js';
+import {theQuestions} from './theQuestions.js';
 function init(maxRepeat: number){
 	prepareRegisterPage();
 	const questionnaire = new Questionnaire(theQuestions, maxRepeat);

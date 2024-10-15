@@ -1,3 +1,4 @@
+import { VasQuestion } from './base.js';
 /// This is where you'll edit to create actual questions.
 /// For the definition of Question class, see question.ts
 
@@ -34,4 +35,4 @@ function genQuestions(): VasQuestion[] {
 // 	return q;
 // }
 
-const theQuestions = genQuestions();
+export const theQuestions = genQuestions();

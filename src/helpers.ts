@@ -1,3 +1,4 @@
+export type CellContent = HTMLElement | string;
 
 function toTwoDigits(n:number): string {
 	// n : integer, returnd 01..99
@@ -5,7 +6,7 @@ function toTwoDigits(n:number): string {
 	return s;
 }
 
-function datetime_format(d: Date): string{
+export function datetime_format(d: Date): string{
 	// hhmmss
 	const timestr = [
 		toTwoDigits(d.getHours()),
@@ -22,7 +23,7 @@ function datetime_format(d: Date): string{
 	return formatted;
 }
 
-function clevAppend(node: HTMLElement, child: CellContent) {
+export function clevAppend(node: HTMLElement, child: CellContent) {
 	if (typeof child === "object" && child.nodeType === 1) {
 		// assume child is a node
 		return(node.appendChild(child));
