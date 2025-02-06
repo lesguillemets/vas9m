@@ -1,9 +1,11 @@
-function init(maxRepeat: number){
+function init(maxRepeat: number) {
 	prepareRegisterPage();
 	const questionnaire = new Questionnaire(theQuestions, maxRepeat);
-	document.getElementById('next')!.onclick = () => {
-		const partId = (document.getElementById('participantID') as HTMLInputElement).value;
-		if (partId === '') {
+	document.getElementById("next")!.onclick = () => {
+		const partId = (
+			document.getElementById("participantID") as HTMLInputElement
+		).value;
+		if (partId === "") {
 			alert("IDを指定してください");
 			return false;
 		}
@@ -12,8 +14,7 @@ function init(maxRepeat: number){
 		if (initSuccess) {
 			runner.startRepeat();
 		}
-	}
+	};
 }
 
-
-window.addEventListener('load', () => init(2));
+window.addEventListener("load", () => init(2));
