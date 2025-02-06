@@ -17,4 +17,4 @@ function init(maxRepeat: number) {
 	};
 }
 
-window.addEventListener("load", () => init(2));
+window.addEventListener("load", () => init(4));
