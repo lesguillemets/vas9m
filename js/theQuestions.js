@@ -1,3 +1,4 @@
+"use strict";
 /// This is where you'll edit to create actual questions.
 /// For the definition of Question class, see question.ts
 function genQuestions() {
