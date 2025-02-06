@@ -97,3 +97,7 @@ input.range-bar {
 	display:block;
 	margin:auto;
 }
+
+button {
+	font-size:15pt;
+}
