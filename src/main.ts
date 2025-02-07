@@ -1,8 +1,8 @@
 function init(maxRepeat: number) {
 	const questionnaire = new Questionnaire(theQuestions, maxRepeat);
-	const saved: Runner | undefined = Runner.tryLoadStatus(questionnaire);
+	const saved: Runner | null = Runner.tryLoadStatus(questionnaire);
 	// there's a saved progress!
-	if (saved !== undefined) {
+	if (saved !== null) {
 		// seems to be finished;
 		if (saved.seemsFinished()) {
 			const ok = confirm(

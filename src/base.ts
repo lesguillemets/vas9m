@@ -226,10 +226,10 @@ class Runner {
 		);
 	}
 
-	static tryLoadStatus(qn: Questionnaire): Runner | undefined {
+	static tryLoadStatus(qn: Questionnaire): Runner | null {
 		const saved = STORAGE.getItem(STORED_KEY);
-		if (saved === undefined) {
-			return undefined;
+		if (saved === null) {
+			return null;
 		}
 		const dat = JSON.parse(saved!);
 		const runner = new Runner(qn, dat.partId);
