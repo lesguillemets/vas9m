@@ -1,4 +1,5 @@
-const STORAGE = sessionStorage;
+const STORAGE = localStorage;
+const STORED_KEY: string = "VAS9M_SAVE";
 
 type CellContent = HTMLElement | string;
 type VasResponse = number | null;
@@ -196,7 +197,7 @@ class Runner {
 		return +res;
 	}
 	initStorage(): boolean {
-		if (sessionStorage.getItem("VAS9M_SAVE") !== null) {
+		if (sessionStorage.getItem(STORED_KEY) !== null) {
 			// sessionStorage contains something!
 			alert("THERE IS STILL A SAVED DATA, WHICH WILL BE LOST!!!");
 			return false;
@@ -207,7 +208,7 @@ class Runner {
 	saveStatus() {
 		// FIXME name
 		STORAGE.setItem(
-			"VAS9M_SAVE",
+			STORED_KEY,
 			JSON.stringify({
 				partId: this.partId,
 				currentQ: this.currentQ,
@@ -227,7 +228,7 @@ class Runner {
 
 function downloadResult(r: Runner) {
 	// FIXME name
-	const datStr = STORAGE.getItem("VAS9M_SAVE");
+	const datStr = STORAGE.getItem(STORED_KEY);
 	if (datStr == null) {
 		alert("多分質問を始めるページを経由してない: Storage 初期化未");
 		return 0;
