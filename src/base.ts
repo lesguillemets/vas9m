@@ -90,6 +90,14 @@ class Runner {
 		return this.currentRepeat === this.qn.maxRepeat - 1;
 	}
 
+	seemsFinished(): boolean {
+		// 全てが回答されてるか
+		const answerFilled = this.rs.rs.flat().every((r: VasResponse) => {
+			return r !== null;
+		});
+		return answerFilled && this.isLastQ() && this.isLastRepeat();
+	}
+
 	startRepeat(): void {
 		if (this.currentQ !== 0) {
 			alert(
@@ -216,6 +224,23 @@ class Runner {
 				rs: this.rs.rs,
 			}),
 		);
+	}
+
+	static tryLoadStatus(qn: Questionnaire): Runner | undefined {
+		const saved = STORAGE.getItem(STORED_KEY);
+		if (saved === undefined) {
+			return undefined;
+		}
+		const dat = JSON.parse(saved!);
+		const runner = new Runner(qn, dat.partId);
+		runner.currentQ = dat.currentQ;
+		runner.currentRepeat = dat.currentRepeat;
+		runner.rs.rs = dat.rs;
+		return runner;
+	}
+
+	static removeSave() {
+		STORAGE.removeItem(STORED_KEY);
 	}
 
 	appendHeader(msg: CellContent): void {

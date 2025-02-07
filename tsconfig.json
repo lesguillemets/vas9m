@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"outDir": "./js",
-		"lib": ["dom", "ES2017"],
+		"lib": ["dom", "ES2019"],
 		"allowJs": true,
 		"strict": true,
 		"target": "ES2017"
