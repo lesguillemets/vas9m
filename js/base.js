@@ -196,7 +196,7 @@ function downloadResult(r) {
     const dat = JSON.parse(datStr);
     const cur = new Date(); // current time
     const timeStamp = datetime_format(cur);
-    const tsvLine = [timeStamp, dat.partId, ...dat.rs.flat()].join("\t");
+    const tsvLine = [dat.partId, timeStamp, ...dat.rs.flat()].join("\t");
     console.log(tsvLine);
     const blob = new Blob([tsvLine], {
         type: "text/tab-separated-values;charset=utf-8",
@@ -204,7 +204,7 @@ function downloadResult(r) {
     const url = URL.createObjectURL(blob);
     const anch = document.createElement("a");
     anch.setAttribute("href", url);
-    anch.setAttribute("download", [timeStamp, "-", dat.partId, ".tsv"].join(""));
+    anch.setAttribute("download", [dat.partId, "-", timeStamp, ".tsv"].join(""));
     anch.style.display = "none";
     document.body.appendChild(anch);
     anch.click();
