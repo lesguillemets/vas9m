@@ -122,8 +122,8 @@ class Runner {
 			// there is still next question available
 			document.getElementById("next")!.onclick = () => {
 				console.log(this.acceptRes());
-				this.saveStatus();
 				this.currentQ += 1;
+				this.saveStatus();
 				this.runStep();
 			};
 		} else {
