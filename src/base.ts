@@ -169,6 +169,7 @@ class Runner {
 			"お疲れ様でした\nこれで回答は終わりです．タブレットはそのままにしてください．",
 		);
 		switchGridToNone();
+		let clearButtonCreated = false;
 		this.clearPage();
 		this.appendHeader("結果のダウンロード");
 		this.setButtonTitle("担当者はここからダウンロード");
@@ -179,12 +180,24 @@ class Runner {
 		`;
 		document.getElementById("next")!.onclick = () => {
 			downloadResult(this);
-			const clear = confirm(
-				"保存できたなら，こちらの記憶は消去してもよいですか？\n（保存したファイルは消えませんが，同じ内容をもう一度ダウンロードはできなくなります）",
-			);
-			if (clear) {
-				Runner.removeSave();
-				window.location.assign("./finished.html");
+			if (!clearButtonCreated) {
+				// create the button to clear the save
+				const b = document.createElement("button");
+				b.id = "clearButton";
+				b.name = "clearButton";
+				b.innerText = "\u26A0 記憶を消去";
+				const doClear = () => {
+					const clear = confirm(
+						"こちらの記憶は消去してもよいですか？\n（保存したファイルは消えませんが，同じ内容をもう一度ダウンロードはできなくなります）",
+					);
+					if (clear) {
+						Runner.removeSave();
+						window.location.assign("./finished.html");
+					}
+				};
+				b.addEventListener("click", doClear);
+				clevAppend(document.getElementById("post-c")!, b);
+				clearButtonCreated = true;
 			}
 		};
 	}
