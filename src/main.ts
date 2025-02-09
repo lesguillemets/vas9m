@@ -17,7 +17,9 @@ function init(maxRepeat: number) {
 			}
 		} else {
 			// there's a saved progress, and it is midway
-			alert("途中のデータがのこっているので，読み込んではじめてみます．");
+			alert(
+				`途中のデータがのこっているので，読み込んではじめてみます．\nID: ${saved.partId} の ${saved.currentRepeat + 1}周目，${saved.currentQ + 1}問目から`,
+			);
 			switchGridToQuestions();
 			saved.runStep();
 			return;
