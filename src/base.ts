@@ -179,6 +179,13 @@ class Runner {
 		`;
 		document.getElementById("next")!.onclick = () => {
 			downloadResult(this);
+			const clear = confirm(
+				"保存できたなら，こちらの記憶は消去してもよいですか？\n（保存したファイルは消えませんが，同じ内容をもう一度ダウンロードはできなくなります）",
+			);
+			if (clear) {
+				Runner.removeSave();
+				window.location.assign("./finished.html");
+			}
 		};
 	}
 
@@ -244,6 +251,8 @@ class Runner {
 	}
 
 	static removeSave() {
+		console.log("clearing save;");
+		console.log(STORAGE.getItem(STORED_KEY));
 		STORAGE.removeItem(STORED_KEY);
 	}
 
