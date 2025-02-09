@@ -1,4 +1,5 @@
-const STORAGE = sessionStorage;
+const STORAGE = localStorage;
+const STORED_KEY: string = "VAS9M_SAVE";
 
 type CellContent = HTMLElement | string;
 type VasResponse = number | null;
@@ -89,6 +90,14 @@ class Runner {
 		return this.currentRepeat === this.qn.maxRepeat - 1;
 	}
 
+	seemsFinished(): boolean {
+		// 全てが回答されてるか
+		const answerFilled = this.rs.rs.flat().every((r: VasResponse) => {
+			return r !== null;
+		});
+		return answerFilled && this.isLastQ() && this.isLastRepeat();
+	}
+
 	startRepeat(): void {
 		if (this.currentQ !== 0) {
 			alert(
@@ -113,8 +122,8 @@ class Runner {
 			// there is still next question available
 			document.getElementById("next")!.onclick = () => {
 				console.log(this.acceptRes());
-				this.saveStatus();
 				this.currentQ += 1;
+				this.saveStatus();
 				this.runStep();
 			};
 		} else {
@@ -135,6 +144,10 @@ class Runner {
 			// there is another round you'll be answering
 			this.currentQ = 0;
 			this.currentRepeat += 1;
+			// TODO:
+			// この後リロードが挟まったら次の週の最初が始まってしまうが，
+			// 流石にやむを得ない
+			this.saveStatus();
 			this.clearPage();
 			switchGridToNone();
 			this.appendHeader("回答はおしまいです");
@@ -166,6 +179,13 @@ class Runner {
 		`;
 		document.getElementById("next")!.onclick = () => {
 			downloadResult(this);
+			const clear = confirm(
+				"保存できたなら，こちらの記憶は消去してもよいですか？\n（保存したファイルは消えませんが，同じ内容をもう一度ダウンロードはできなくなります）",
+			);
+			if (clear) {
+				Runner.removeSave();
+				window.location.assign("./finished.html");
+			}
 		};
 	}
 
@@ -196,7 +216,7 @@ class Runner {
 		return +res;
 	}
 	initStorage(): boolean {
-		if (sessionStorage.getItem("VAS9M_SAVE") !== null) {
+		if (sessionStorage.getItem(STORED_KEY) !== null) {
 			// sessionStorage contains something!
 			alert("THERE IS STILL A SAVED DATA, WHICH WILL BE LOST!!!");
 			return false;
@@ -207,7 +227,7 @@ class Runner {
 	saveStatus() {
 		// FIXME name
 		STORAGE.setItem(
-			"VAS9M_SAVE",
+			STORED_KEY,
 			JSON.stringify({
 				partId: this.partId,
 				currentQ: this.currentQ,
@@ -215,6 +235,25 @@ class Runner {
 				rs: this.rs.rs,
 			}),
 		);
+	}
+
+	static tryLoadStatus(qn: Questionnaire): Runner | null {
+		const saved = STORAGE.getItem(STORED_KEY);
+		if (saved === null) {
+			return null;
+		}
+		const dat = JSON.parse(saved!);
+		const runner = new Runner(qn, dat.partId);
+		runner.currentQ = dat.currentQ;
+		runner.currentRepeat = dat.currentRepeat;
+		runner.rs.rs = dat.rs;
+		return runner;
+	}
+
+	static removeSave() {
+		console.log("clearing save;");
+		console.log(STORAGE.getItem(STORED_KEY));
+		STORAGE.removeItem(STORED_KEY);
 	}
 
 	appendHeader(msg: CellContent): void {
@@ -227,7 +266,7 @@ class Runner {
 
 function downloadResult(r: Runner) {
 	// FIXME name
-	const datStr = STORAGE.getItem("VAS9M_SAVE");
+	const datStr = STORAGE.getItem(STORED_KEY);
 	if (datStr == null) {
 		alert("多分質問を始めるページを経由してない: Storage 初期化未");
 		return 0;
