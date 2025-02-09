@@ -144,6 +144,10 @@ class Runner {
 			// there is another round you'll be answering
 			this.currentQ = 0;
 			this.currentRepeat += 1;
+			// TODO:
+			// この後リロードが挟まったら次の週の最初が始まってしまうが，
+			// 流石にやむを得ない
+			this.saveStatus();
 			this.clearPage();
 			switchGridToNone();
 			this.appendHeader("回答はおしまいです");
